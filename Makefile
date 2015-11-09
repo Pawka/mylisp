@@ -2,4 +2,4 @@
 
 
 compile:
-	cc -std=c99 -Wall repl.c -ledit -o repl
+	cc -std=c99 -Wall prompt.c -ledit -o prompt
