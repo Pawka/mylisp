@@ -1,17 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-/* static means this var is local to this file */
-static char input[2048];
+#include <editline/readline.h>
+#include <editline/history.h>
 
 int main(int argc, char** argv) {
     puts("MyLisp");
     puts("Press Ctrl+C to Exit\n");
 
     while (1) {
-        fputs("mylisp> ", stdout);
-        fgets(input, 2048, stdin);
+        char* input = readline("mylisp> ");
+
+        add_history(input);
 
         printf("No you're a %s", input);
+
+        free(input);
     }
 
     return 0;
