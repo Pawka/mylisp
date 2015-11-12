@@ -2,4 +2,4 @@
 
 
 compile:
-	cc -std=c99 -Wall prompt.c -ledit -o prompt
+	cc -std=c99 -Wall parsing.c mpc.c -ledit -lm -o parsing.o
