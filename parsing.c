@@ -25,7 +25,7 @@ enum { LVAL_NUM, LVAL_ERR, LVAL_SYM, LVAL_SEXPR };
 
 typedef struct lval {
     int type;
-    long num;
+    long double num;
 
     char* err;
     char* sym;
@@ -35,7 +35,7 @@ typedef struct lval {
 } lval;
 
 /* Create new number type lval */
-lval* lval_num(long x) {
+lval* lval_num(long double x) {
     lval* v = malloc(sizeof(lval));
     v->type = LVAL_NUM;
     v->num = x;
@@ -136,7 +136,7 @@ void lval_expr_print(lval* v, char open, char close) {
 
 void lval_print(lval* v) {
     switch (v->type) {
-        case LVAL_NUM: printf("%li", v->num); break;
+        case LVAL_NUM: printf("%Lf", v->num); break;
         case LVAL_ERR: printf("Error: %s", v->err); break;
         case LVAL_SYM: printf("%s", v->sym); break;
         case LVAL_SEXPR: lval_expr_print(v, '(', ')'); break;
@@ -179,7 +179,7 @@ lval* builtin_op(lval* a, char* op) {
             x->num /= y->num;
         }
         if (strcmp(op, "%") == 0) {
-            x->num %= y->num;
+            x->num = ((int)x->num) % ((int)y->num);
         }
         if (strcmp(op, "min") == 0) {
             if (y->num < x->num) {
@@ -239,7 +239,7 @@ lval* lval_eval(lval* v) {
 
 lval* lval_read_num(mpc_ast_t* t) {
     errno = 0;
-    long x = strtol(t->contents, NULL, 10);
+    long double x = strtold(t->contents, NULL);
     return errno != ERANGE ?
         lval_num(x) : lval_err("invalid number");
 }
@@ -280,7 +280,7 @@ int main(int argc, char** argv) {
     /* Define them with the following Language */
     mpca_lang(MPCA_LANG_DEFAULT,
             "                                                   \
-            number   : /-?[0-9]+/ ;                             \
+            number   : /-?[0-9]+(\\.[0-9]+)?/ ;                             \
             symbol   : '+' | '-' | '*' | '/' | '%' | '^' | \"max\" | \"min\"; \
             sexpr    : '(' <expr>* ')' ;                        \
             expr     : <number> | <symbol> | <sexpr> ;           \

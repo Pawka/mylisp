@@ -2,6 +2,13 @@
 
 By http://www.buildyourownlisp.com/
 
-## TODO
+## FEATURES
 
-- Implement double number support.
+- Long double numbers support.
+- Operators: -, +, *, /, %
+- Functions: min, max
+
+# TODO
+
+- Currently all numbers are long doubles. Separate integers from doubles.
+
