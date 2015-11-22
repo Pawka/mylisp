@@ -178,6 +178,19 @@ lval* builtin_op(lval* a, char* op) {
 
             x->num /= y->num;
         }
+        if (strcmp(op, "%") == 0) {
+            x->num %= y->num;
+        }
+        if (strcmp(op, "min") == 0) {
+            if (y->num < x->num) {
+                x->num = y->num;
+            }
+        }
+        if (strcmp(op, "max") == 0) {
+            if (y->num > x->num) {
+                x->num = y->num;
+            }
+        }
 
         lval_del(y);
     }
