@@ -256,6 +256,21 @@ lval* builtin_list(lval* a) {
   return a;
 }
 
+/* Return all except final elements in Q-Expression. */
+lval* builtin_init(lval* a) {
+  LASSERT(a, a->count == 1,
+    "Function 'tail' passed too many arguments!");
+  LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
+    "Function 'tail' passed incorrect type!");
+  LASSERT(a, a->cell[0]->count != 0,
+    "Function 'tail' passed {}!");
+
+  lval* v = lval_take(a, 0);
+  lval_del(lval_pop(v, v->count - 1));
+  return v;
+}
+
+/* Return number of elements in Q-Expression */
 lval* builtin_len(lval* a) {
   LASSERT(a, a->count == 1,
     "Function 'len' passed too many arguments!");
@@ -300,7 +315,7 @@ lval* builtin(lval* a, char* func) {
   if (strcmp("eval", func) == 0) { return builtin_eval(a); }
   /* if (strcmp("cons", func) == 0) { return builtin_cons(a); } */
   if (strcmp("len", func) == 0) { return builtin_len(a); }
-  /* if (strcmp("init", func) == 0) { return builtin_init(a); } */
+  if (strcmp("init", func) == 0) { return builtin_init(a); }
 
   if (strcmp("min", func) == 0) { return builtin_op(a, func); }
   if (strcmp("max", func) == 0) { return builtin_op(a, func); }
