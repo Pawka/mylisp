@@ -252,7 +252,16 @@ lval* builtin_tail(lval* a) {
 
 lval* builtin_list(lval* a) {
   a->type = LVAL_QEXPR;
+
   return a;
+}
+
+lval* builtin_len(lval* a) {
+  LASSERT(a, a->count == 1,
+    "Function 'len' passed too many arguments!");
+  lval* v = lval_num(a->cell[0]->count);
+  lval_del(a);
+  return v;
 }
 
 lval* builtin_eval(lval* a) {
@@ -289,6 +298,10 @@ lval* builtin(lval* a, char* func) {
   if (strcmp("tail", func) == 0) { return builtin_tail(a); }
   if (strcmp("join", func) == 0) { return builtin_join(a); }
   if (strcmp("eval", func) == 0) { return builtin_eval(a); }
+  /* if (strcmp("cons", func) == 0) { return builtin_cons(a); } */
+  if (strcmp("len", func) == 0) { return builtin_len(a); }
+  /* if (strcmp("init", func) == 0) { return builtin_init(a); } */
+
   if (strcmp("min", func) == 0) { return builtin_op(a, func); }
   if (strcmp("max", func) == 0) { return builtin_op(a, func); }
   if (strstr("+-/*%^", func)) { return builtin_op(a, func); }
@@ -379,6 +392,7 @@ int main(int argc, char** argv) {
             "                                                   \
             number   : /-?[0-9]+(\\.[0-9]+)?/ ;                 \
             symbol   : \"list\" | \"head\" | \"tail\" | \"join\"\
+                     | \"len\" | \"cons\" | \"init\" \
                      | \"eval\" | '+' | '-' | '*' | '/' | '%'   \
                      | '^' | \"max\" | \"min\"; \
             sexpr    : '(' <expr>* ')' ;                        \
